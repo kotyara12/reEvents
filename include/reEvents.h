@@ -30,8 +30,7 @@ extern "C" {
 static const char* RE_SYSTEM_EVENTS = "REVT_SYSTEM";
 
 typedef enum {
-  RE_SYS_SYSLED = 0,
-  RE_SYS_ERROR,
+  RE_SYS_ERROR = 0,
   RE_SYS_OTA,
   RE_SYS_COMMAND,
   RE_SYS_TELEGRAM_ERROR,
@@ -41,8 +40,7 @@ typedef enum {
 
 typedef enum {
   RE_SYS_CLEAR   = 0,
-  RE_SYS_SET     = 1,
-  RE_SYS_FLASH   = 2,
+  RE_SYS_SET     = 1
 } re_system_event_type_t;   
 
 typedef struct {
@@ -57,8 +55,10 @@ typedef enum {
   RE_TIME_RTC_ENABLED = 0,
   RE_TIME_SNTP_SYNC_OK,
   RE_TIME_EVERY_MINUTE,
+  RE_TIME_TIMESPAN_ON,
+  RE_TIME_TIMESPAN_OFF,
   RE_TIME_SILENT_MODE_ON,
-  RE_TIME_SILENT_MODE_OFF
+  RE_TIME_SILENT_MODE_OFF,
 } re_time_event_id_t;
 
 // Forwarded WIFI events
