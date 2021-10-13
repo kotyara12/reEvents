@@ -1,14 +1,15 @@
 #include "reEvents.h"
 #include "sdkconfig.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include "rLog.h"
 
 static const char* logTAG = "EVTS";
 
 #if CONFIG_EVENT_LOOP_DEDICATED
-esp_event_loop_handle_t _eventLoop;
+static esp_event_loop_handle_t _eventLoop;
 static const char* eventLoopTaskName = "re_events";
 #endif // CONFIG_EVENT_LOOP_DEDICATED
-
 
 // -----------------------------------------------------------------------------------------------------------------------
 // ----------------------------------------------------- Main event loop -------------------------------------------------
@@ -30,9 +31,9 @@ bool eventLoopCreate()
       esp_err_t err = esp_event_loop_create(&_loopCfg, &_eventLoop);
       if (err == ESP_OK) {
         rloga_i("Dedicated event loop created successfully");
+        return true;
       } else {
         rloga_e("Failed to create event loop!");
-        return false;
       };
     };
   #else
@@ -40,14 +41,14 @@ bool eventLoopCreate()
     esp_err_t err = esp_event_loop_create_default();  
     if (err == ESP_OK) {
       rloga_i("Default event loop created successfully");
+      return true;
     } else if (err == ESP_ERR_INVALID_STATE) {
       rloga_i("Default event loop already created");
     } else {
       rloga_e("Failed to create event loop!");
-      return false;
     };
   #endif // CONFIG_EVENT_LOOP_DEDICATED
-  return true;
+  return false;
 }
 
 void eventLoopDelete()
