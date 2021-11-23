@@ -224,6 +224,7 @@ bool eventHandlerUnregister(esp_event_base_t event_base, int32_t event_id, esp_e
 // -----------------------------------------------------------------------------------------------------------------------
 
 bool eventLoopPost(esp_event_base_t event_base, int32_t event_id, void* event_data, size_t event_data_size, TickType_t ticks_to_wait);
+bool eventLoopPostFromISR(esp_event_base_t event_base, int32_t event_id, void* event_data, size_t event_data_size, BaseType_t* task_unblocked);
 bool eventLoopPostSystem(int32_t event_id, re_system_event_type_t event_type, bool event_forced = false, uint32_t event_data = 0);
 
 #ifdef __cplusplus

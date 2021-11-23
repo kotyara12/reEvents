@@ -141,6 +141,27 @@ bool eventLoopPost(esp_event_base_t event_base, int32_t event_id, void* event_da
   return true;
 }
 
+bool eventLoopPostFromISR(esp_event_base_t event_base, int32_t event_id, void* event_data, size_t event_data_size, BaseType_t* task_unblocked)
+{
+  #if CONFIG_EVENT_LOOP_DEDICATED
+    // Dedicated event loop
+    if (_eventLoop) {
+      esp_err_t err = esp_event_isr_post_to(_eventLoop, event_base, event_id, event_data, event_data_size, task_unblocked);
+      if (err != ESP_OK) {
+        return false;    
+      };
+    };
+    return false;
+  #else
+    // Default event loop
+    esp_err_t err = esp_event_isr_post(event_base, event_id, event_data, event_data_size, task_unblocked);
+    if (err != ESP_OK) {
+      return false;    
+    };
+  #endif // CONFIG_EVENT_LOOP_DEDICATED
+  return true;
+}
+
 bool eventLoopPostSystem(int32_t event_id, re_system_event_type_t event_type, bool event_forced, uint32_t event_data)
 {
   re_system_event_data_t data = {
