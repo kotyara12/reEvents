@@ -64,6 +64,7 @@ typedef enum {
   RE_TIME_TIMESPAN_OFF,
   RE_TIME_SILENT_MODE_ON,
   RE_TIME_SILENT_MODE_OFF,
+  RE_TIME_TARIFF_CHANGED
 } re_time_event_id_t;
 
 // Forwarded WIFI events
