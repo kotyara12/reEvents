@@ -113,14 +113,14 @@ typedef struct {
 
 // Pinger service events
 static const char* RE_PING_EVENTS = "REVT_PINGER";
+
 typedef enum {
   RE_PING_STARTED = 0,
   RE_PING_STOPPED,
-  RE_PING_HOST_AVAILABLE,
-  RE_PING_HOST_UNAVAILABLE,
   RE_PING_INET_AVAILABLE,
   RE_PING_INET_UNAVAILABLE,
-  RE_PING_INET_UNAVAILABLE_UNCONFIRMED,
+  RE_PING_HOST_AVAILABLE,
+  RE_PING_HOST_UNAVAILABLE,
   RE_PING_TG_API_AVAILABLE,
   RE_PING_TG_API_UNAVAILABLE,
   RE_PING_MQTT1_AVAILABLE,
@@ -160,6 +160,7 @@ typedef struct {
   float loss_avg;
   float loss_max;
   time_t time_unavailable;
+  uint32_t count_bad;
   uint32_t count_unavailable;
 } ping_inet_data_t;
 
