@@ -118,6 +118,7 @@ typedef enum {
   RE_PING_STARTED = 0,
   RE_PING_STOPPED,
   RE_PING_INET_AVAILABLE,
+  RE_PING_INET_VERY_SLOW,
   RE_PING_INET_UNAVAILABLE,
   RE_PING_HOST_AVAILABLE,
   RE_PING_HOST_UNAVAILABLE,
@@ -153,14 +154,13 @@ typedef struct {
   uint8_t hosts_count;
   uint8_t hosts_available;
   ping_state_t state;
-  uint32_t duration_ms_avg;
   uint32_t duration_ms_min;
   uint32_t duration_ms_max;
+  uint32_t duration_ms_total;
   float loss_min;
-  float loss_avg;
   float loss_max;
+  float loss_total;
   time_t time_unavailable;
-  uint32_t count_bad;
   uint32_t count_unavailable;
 } ping_inet_data_t;
 
