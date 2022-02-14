@@ -95,13 +95,12 @@ typedef enum {
 } re_mqtt_event_id_t;
 
 typedef struct {
+  bool connected;
   bool primary;
   bool local;
-  bool connected;
   char* host;
   uint32_t port;
   uint32_t conn_attempt;
-  esp_mqtt_error_codes_t err_codes;
 } re_mqtt_event_data_t;
 
 typedef struct {
@@ -118,7 +117,7 @@ typedef enum {
   RE_PING_STARTED = 0,
   RE_PING_STOPPED,
   RE_PING_INET_AVAILABLE,
-  RE_PING_INET_VERY_SLOW,
+  RE_PING_INET_DELAYED,
   RE_PING_INET_UNAVAILABLE,
   RE_PING_HOST_AVAILABLE,
   RE_PING_HOST_UNAVAILABLE,
@@ -131,8 +130,8 @@ typedef enum {
 } re_ping_event_id_t;
 
 typedef enum {
-  PING_AVAILABLE = 0,
-  PING_BAD,
+  PING_OK = 0,
+  PING_DELAYED,
   PING_UNAVAILABLE,
   PING_FAILED
 } ping_state_t;
