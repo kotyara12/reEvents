@@ -30,9 +30,10 @@ extern "C" {
 static const char* RE_SYSTEM_EVENTS = "REVT_SYSTEM";
 
 typedef enum {
-  RE_SYS_ERROR = 0,
+  RE_SYS_STARTED = 0,
   RE_SYS_OTA,
   RE_SYS_COMMAND,
+  RE_SYS_ERROR,
   RE_SYS_TELEGRAM_ERROR,
   RE_SYS_THINGSPEAK_ERROR,
   RE_SYS_OPENMON_ERROR
@@ -131,7 +132,7 @@ typedef enum {
 
 typedef enum {
   PING_OK = 0,
-  PING_DELAYED,
+  PING_SLOWDOWN,
   PING_UNAVAILABLE,
   PING_FAILED
 } ping_state_t;
