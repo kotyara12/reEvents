@@ -68,6 +68,14 @@ typedef enum {
   RE_TIME_ELTARIFF_CHANGED
 } re_time_event_id_t;
 
+// GPIO events
+static const char* RE_GPIO_EVENTS = "REVT_GPIO";
+typedef enum {
+  RE_GPIO_CHANGE = 0,
+  RE_GPIO_BUTTON = 1,
+  RE_GPIO_LONG_BUTTON = 2
+} re_gpio_event_id_t;
+
 // Forwarded WIFI events
 static const char* RE_WIFI_EVENTS = "REVT_WIFI";
 
@@ -143,7 +151,7 @@ typedef struct {
     uint32_t transmitted;
     uint32_t received;
     uint32_t total_time_ms;
-    uint32_t duration_ms;
+    uint16_t duration_ms;
     float loss;
     uint8_t ttl;
     ping_state_t state;
@@ -154,9 +162,9 @@ typedef struct {
   uint8_t hosts_count;
   uint8_t hosts_available;
   ping_state_t state;
-  uint32_t duration_ms_min;
-  uint32_t duration_ms_max;
-  uint32_t duration_ms_total;
+  uint16_t duration_ms_min;
+  uint16_t duration_ms_max;
+  uint16_t duration_ms_total;
   float loss_min;
   float loss_max;
   float loss_total;
