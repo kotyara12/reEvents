@@ -36,7 +36,8 @@ typedef enum {
   RE_SYS_ERROR,
   RE_SYS_TELEGRAM_ERROR,
   RE_SYS_THINGSPEAK_ERROR,
-  RE_SYS_OPENMON_ERROR
+  RE_SYS_OPENMON_ERROR,
+  RE_SYS_NARODMON_ERROR
 } re_system_event_id_t;
 
 typedef enum {
