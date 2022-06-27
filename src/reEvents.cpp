@@ -71,6 +71,7 @@ bool eventHandlerRegister(esp_event_base_t event_base, int32_t event_id, esp_eve
   #if CONFIG_EVENT_LOOP_DEDICATED
     // Dedicated event loop
     if (_eventLoop) {
+      rlog_d(logTAG, "Register dedicated event handler for %s #%d", event_base, event_id);
       esp_err_t err = esp_event_handler_register_with(_eventLoop, event_base, event_id, event_handler, event_handler_arg);
       if (err != ESP_OK) {
         rlog_e(logTAG, "Failed to register event handler for %s #%d", event_base, event_id);
@@ -81,6 +82,7 @@ bool eventHandlerRegister(esp_event_base_t event_base, int32_t event_id, esp_eve
     };
   #else
     // Default event loop
+    rlog_d(logTAG, "Register default event handler for %s #%d", event_base, event_id);
     esp_err_t err = esp_event_handler_register(event_base, event_id, event_handler, event_handler_arg);
     if (err != ESP_OK) {
       rlog_e(logTAG, "Failed to register event handler for %s #%d", event_base, event_id);
@@ -169,5 +171,13 @@ bool eventLoopPostSystem(int32_t event_id, re_system_event_type_t event_type, bo
     .data = event_data,
     .forced = event_forced
   }; 
+  return eventLoopPost(RE_SYSTEM_EVENTS, event_id, &data, sizeof(data), portMAX_DELAY);
+}
+
+bool eventLoopPostError(int32_t event_id, esp_err_t err_code)
+{
+  re_error_event_data_t data = {
+    .err_code = err_code
+  };
   return eventLoopPost(RE_SYSTEM_EVENTS, event_id, &data, sizeof(data), portMAX_DELAY);
 }

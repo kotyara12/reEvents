@@ -14,7 +14,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include "esp_event.h"
-#include "mqtt_client.h"
+// #include "mqtt_client.h"
 #include "project_config.h"
 #include "rTypes.h"
 
@@ -35,9 +35,9 @@ typedef enum {
   RE_SYS_COMMAND,
   RE_SYS_ERROR,
   RE_SYS_TELEGRAM_ERROR,
-  RE_SYS_THINGSPEAK_ERROR,
   RE_SYS_OPENMON_ERROR,
-  RE_SYS_NARODMON_ERROR
+  RE_SYS_NARODMON_ERROR,
+  RE_SYS_THINGSPEAK_ERROR
 } re_system_event_id_t;
 
 typedef enum {
@@ -50,6 +50,10 @@ typedef struct {
   uint32_t data;
   bool forced;
 } re_system_event_data_t;
+
+typedef struct {
+  esp_err_t err_code;
+} re_error_event_data_t;
 
 // Time events
 static const char* RE_TIME_EVENTS = "REVT_TIME";
@@ -230,6 +234,7 @@ bool eventHandlerUnregister(esp_event_base_t event_base, int32_t event_id, esp_e
 bool eventLoopPost(esp_event_base_t event_base, int32_t event_id, void* event_data, size_t event_data_size, TickType_t ticks_to_wait);
 bool eventLoopPostFromISR(esp_event_base_t event_base, int32_t event_id, void* event_data, size_t event_data_size, BaseType_t* task_unblocked);
 bool eventLoopPostSystem(int32_t event_id, re_system_event_type_t event_type, bool event_forced = false, uint32_t event_data = 0);
+bool eventLoopPostError(int32_t event_id, esp_err_t err_code);
 
 #ifdef __cplusplus
 }
