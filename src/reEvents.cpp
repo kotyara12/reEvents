@@ -1,7 +1,10 @@
 #include "reEvents.h"
+#include "string.h"
 #include "sdkconfig.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "def_events.h"
+#include "def_tasks.h"
 #include "rLog.h"
 
 static const char* logTAG = "EVTS";
@@ -10,6 +13,8 @@ static const char* logTAG = "EVTS";
 static esp_event_loop_handle_t _eventLoop;
 static const char* eventLoopTaskName = "re_events";
 #endif // CONFIG_EVENT_LOOP_DEDICATED
+
+#define CONFIG_EVENT_LOOP_POST_DELAY pdMS_TO_TICKS(1000)
 
 // -----------------------------------------------------------------------------------------------------------------------
 // ----------------------------------------------------- Main event loop -------------------------------------------------
@@ -21,13 +26,13 @@ bool eventLoopCreate()
     // Dedicated event loop
     if (!_eventLoop) {
       // Create the event loop 
-      esp_event_loop_args_t _loopCfg = {
-        .queue_size = CONFIG_EVENT_LOOP_QUEUE_SIZE,
-        .task_name = eventLoopTaskName,
-        .task_priority = CONFIG_EVENT_LOOP_PRIORITY,
-        .task_stack_size = CONFIG_EVENT_LOOP_STACK_SIZE,
-        .task_core_id = CONFIG_EVENT_LOOP_CORE
-      };
+      esp_event_loop_args_t _loopCfg;
+      memset(&_loopCfg, 0, sizeof(_loopCfg));
+      _loopCfg.queue_size = CONFIG_EVENT_LOOP_QUEUE_SIZE;
+      _loopCfg.task_name = eventLoopTaskName;
+      _loopCfg.task_priority = CONFIG_EVENT_LOOP_PRIORITY;
+      _loopCfg.task_stack_size = CONFIG_EVENT_LOOP_STACK_SIZE;
+      _loopCfg.task_core_id = CONFIG_EVENT_LOOP_CORE;
       esp_err_t err = esp_event_loop_create(&_loopCfg, &_eventLoop);
       if (err == ESP_OK) {
         rloga_i("Dedicated event loop created successfully");
@@ -122,46 +127,45 @@ bool eventHandlerUnregister(esp_event_base_t event_base, int32_t event_id, esp_e
 
 bool eventLoopPost(esp_event_base_t event_base, int32_t event_id, void* event_data, size_t event_data_size, TickType_t ticks_to_wait)
 {
+  esp_err_t err = ESP_OK;
   #if CONFIG_EVENT_LOOP_DEDICATED
     // Dedicated event loop
-    if (_eventLoop) {
-      esp_err_t err = esp_event_post_to(_eventLoop, event_base, event_id, event_data, event_data_size, ticks_to_wait);
+    if (!_eventLoop) return false;
+    do {
+      esp_err_t err = esp_event_post_to(_eventLoop, event_base, event_id, event_data, event_data_size, ticks_to_wait == portMAX_DELAY ? CONFIG_EVENT_LOOP_POST_DELAY : ticks_to_wait);
       if (err != ESP_OK) {
         rlog_e(logTAG, "Failed to post event to \"%s\" #%d: %d (%s)", event_base, event_id, err, esp_err_to_name(err));
-        return false;    
+        if (ticks_to_wait == portMAX_DELAY) {
+          vTaskDelay(CONFIG_EVENT_LOOP_POST_DELAY);
+        };
       };
-    };
-    return false;
+    } while ((ticks_to_wait == portMAX_DELAY) && (err != ESP_OK));
   #else
     // Default event loop
-    esp_err_t err = esp_event_post(event_base, event_id, event_data, event_data_size, ticks_to_wait);
-    if (err != ESP_OK) {
-      rlog_e(logTAG, "Failed to post event to \"%s\" #%d: %d (%s)", event_base, event_id, err, esp_err_to_name(err));
-      return false;    
-    };
+    do {
+      esp_err_t err = esp_event_post(event_base, event_id, event_data, event_data_size, ticks_to_wait == portMAX_DELAY ? CONFIG_EVENT_LOOP_POST_DELAY : ticks_to_wait);
+      if (err != ESP_OK) {
+        rlog_e(logTAG, "Failed to post event to \"%s\" #%d: %d (%s)", event_base, event_id, err, esp_err_to_name(err));
+        if (ticks_to_wait == portMAX_DELAY) {
+          vTaskDelay(CONFIG_EVENT_LOOP_POST_DELAY);
+        };
+      };
+    } while ((ticks_to_wait == portMAX_DELAY) && (err != ESP_OK));
   #endif // CONFIG_EVENT_LOOP_DEDICATED
-  return true;
+  return err == ESP_OK;
 }
 
 bool eventLoopPostFromISR(esp_event_base_t event_base, int32_t event_id, void* event_data, size_t event_data_size, BaseType_t* task_unblocked)
 {
   #if CONFIG_EVENT_LOOP_DEDICATED
     // Dedicated event loop
-    if (_eventLoop) {
-      esp_err_t err = esp_event_isr_post_to(_eventLoop, event_base, event_id, event_data, event_data_size, task_unblocked);
-      if (err != ESP_OK) {
-        return false;    
-      };
-    };
-    return false;
+    if (!_eventLoop) return false;
+    esp_err_t err = esp_event_isr_post_to(_eventLoop, event_base, event_id, event_data, event_data_size, task_unblocked);
   #else
     // Default event loop
     esp_err_t err = esp_event_isr_post(event_base, event_id, event_data, event_data_size, task_unblocked);
-    if (err != ESP_OK) {
-      return false;    
-    };
   #endif // CONFIG_EVENT_LOOP_DEDICATED
-  return true;
+  return err == ESP_OK;
 }
 
 bool eventLoopPostSystem(int32_t event_id, re_system_event_type_t event_type, bool event_forced, uint32_t event_data)
