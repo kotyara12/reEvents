@@ -113,7 +113,7 @@ typedef struct {
   bool connected;
   bool primary;
   bool local;
-  char* host;
+  char host[32];
   uint32_t port;
   uint32_t conn_attempt;
 } re_mqtt_event_data_t;
