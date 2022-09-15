@@ -105,17 +105,16 @@ typedef enum {
   RE_MQTT_CONN_FAILED,
   RE_MQTT_SERVER_PRIMARY,
   RE_MQTT_SERVER_RESERVED,
+  RE_MQTT_SELF_STOP,
   RE_MQTT_RESTART,
   RE_MQTT_INCOMING_DATA
 } re_mqtt_event_id_t;
 
 typedef struct {
-  bool connected;
   bool primary;
   bool local;
   char host[32];
   uint32_t port;
-  uint32_t conn_attempt;
 } re_mqtt_event_data_t;
 
 typedef struct {
