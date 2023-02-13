@@ -1,6 +1,6 @@
 {
   "name": "reEvents",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "Main event loop for ESP32 (ESP-IDF)",
   "keywords": "events",
   "authors":

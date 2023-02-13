@@ -14,7 +14,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include "esp_event.h"
-// #include "mqtt_client.h"
+#include "lwip/ip_addr.h"
 #include "project_config.h"
 #include "rTypes.h"
 
