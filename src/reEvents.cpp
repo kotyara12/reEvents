@@ -14,7 +14,7 @@ static esp_event_loop_handle_t _eventLoop;
 static const char* eventLoopTaskName = "re_events";
 #endif // CONFIG_EVENT_LOOP_DEDICATED
 
-#define CONFIG_EVENT_LOOP_POST_DELAY pdMS_TO_TICKS(1000)
+#define CONFIG_EVENT_LOOP_POST_DELAY pdMS_TO_TICKS(10000)
 
 // -----------------------------------------------------------------------------------------------------------------------
 // ----------------------------------------------------- Main event loop -------------------------------------------------
