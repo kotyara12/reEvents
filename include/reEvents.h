@@ -203,7 +203,7 @@ typedef enum {
 static const char* RE_SENSOR_EVENTS = "REVT_SENSORS";
 
 typedef enum {
-  RE_SENSOR_STATUS_CHANGED       = 0
+  RE_SENSOR_STATUS_CHANGED = 0
 } sensor_event_id_t;
 
 typedef struct {
@@ -212,6 +212,20 @@ typedef struct {
   uint8_t old_status; 
   uint8_t new_status;
 } sensor_event_status_t;
+
+// Simple data forwarding
+static const char* RE_DATA_EVENTS = "REVT_DATA";
+
+typedef enum {
+  RE_DATA_1 = 0,
+  RE_DATA_2,
+  RE_DATA_3,
+  RE_DATA_4,
+  RE_DATA_5,
+  RE_DATA_6,
+  RE_DATA_7,
+  RE_DATA_8
+} sensor_event_data_t;
 
 // -----------------------------------------------------------------------------------------------------------------------
 // ---------------------------------------------------- Main event loop --------------------------------------------------
